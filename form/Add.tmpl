@@ -1,0 +1,13 @@
+{{ define "Add" }}
+  {{ template "Header" }}
+    {{ template "Menu" }} 
+   <h2>Add Book</h2>  
+    <form method="POST" action="insert">
+      <label> Title </label><input type="text" name="title" /><br />
+      <label> Author </label><input type="text" name="author" /><br />
+      <label> Format Type </label><input type="text" name="formattype" /><br />
+      <label> Location </label><input type="text" name="location" /><br />
+      <input type="submit" value="Save book" />
+    </form>
+  {{ template "Footer" }}
+{{ end }}
