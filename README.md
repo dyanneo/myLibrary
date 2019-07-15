@@ -1,4 +1,4 @@
-# myLibraryWeb
+# myLibrary
 Web app with mysql db and go backend to capture and organize my books based on [this example](http://www.golangprograms.com/advance-programs/example-of-golang-crud-using-mysql-from-scratch.html).
 
 ### Database
