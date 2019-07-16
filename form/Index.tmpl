@@ -10,8 +10,9 @@
         <td>Author</td>
         <td>FormatType</td>
         <td>Location</td>
+        <td>ISBN</td>
         <td>View</td>
-        <dt>Edit</td>
+        <td>Edit</td>
         <td>Delete</td>
       </tr>
        </thead>
@@ -22,7 +23,8 @@
         <td>{{ .Title }} </td>
         <td>{{ .Author }} </td> 
         <td>{{ .FormatType }} </td> 
-        <td>{{ .Location }} </td> 
+        <td>{{ .Location }} </td>
+        <td>{{ .ISBN }} </td> 
         <td><a href="/show?id={{ .ID }}">View</a></td>
         <td><a href="/edit?id={{ .ID }}">Edit</a></td>
         <td><a href="/delete?id={{ .ID }}">Delete</a><td>
