@@ -10,8 +10,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// _ "github.com/go-sql-driver/mysql"  <- import when ready to use db
-
 // Book is the main object of this app
 type Book struct {
 	ID         int
@@ -19,6 +17,7 @@ type Book struct {
 	Author     string
 	FormatType string
 	Location   string
+	ISBN       string
 }
 
 // <- uncomment when ready to use db
@@ -46,7 +45,7 @@ var tmpl = template.Must(template.ParseGlob("form/*"))
 func Index(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("top of Index")
 	db := dbConn()
-	selDB, err := db.Query("SELECT * FROM book ORDER BY id DESC")
+	selDB, err := db.Query("SELECT * FROM book ORDER BY id ASC")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -54,21 +53,57 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	res := []Book{}
 	for selDB.Next() {
 		var id int
-		var title, author, formattype, location string
-		err = selDB.Scan(&id, &title, &author, &formattype, &location)
+		var title, author, formattype, location, isbnnumber string
+		var isbn sql.NullString
+		err = selDB.Scan(&id, &title, &author, &formattype, &location, &isbn)
 		if err != nil {
 			panic(err.Error())
+		}
+		if isbn.Valid {
+			isbnnumber = isbn.String
 		}
 		book.ID = id
 		book.Title = title
 		book.Author = author
 		book.FormatType = formattype
 		book.Location = location
+		book.ISBN = isbnnumber
 		res = append(res, book)
 	}
 	tmpl.ExecuteTemplate(w, "Index", res)
 	defer db.Close()
 
+}
+
+// Show a book's full details
+func Show(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+	nID := r.URL.Query().Get("id")
+	selDB, err := db.Query("SELECT * FROM book WHERE id=?", nID)
+	if err != nil {
+		panic(err.Error())
+	}
+	book := Book{}
+	for selDB.Next() {
+		var id int
+		var title, author, formattype, location, isbnnumber string
+		var isbn sql.NullString
+		err = selDB.Scan(&id, &title, &author, &formattype, &location, &isbn)
+		if err != nil {
+			panic(err.Error())
+		}
+		if isbn.Valid {
+			isbnnumber = isbn.String
+		}
+		book.ID = id
+		book.Title = title
+		book.Author = author
+		book.FormatType = formattype
+		book.Location = location
+		book.ISBN = isbnnumber
+	}
+	tmpl.ExecuteTemplate(w, "Show", book)
+	defer db.Close()
 }
 
 // Add a new book to the database
@@ -86,12 +121,13 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 		author := r.FormValue("author")
 		formattype := r.FormValue("formattype")
 		location := r.FormValue("location")
-		insForm, err := db.Prepare("INSERT INTO book(title, author, formattype, location) VALUES(?,?,?,?)")
+		isbn := r.FormValue("isbn")
+		insForm, err := db.Prepare("INSERT INTO book(title, author, formattype, location, isbn) VALUES(?,?,?,?,?)")
 		if err != nil {
 			panic(err.Error())
 		}
-		insForm.Exec(title, author, formattype, location)
-		log.Println("INSERT: Title: " + title + " | Author: " + author + " | Format: " + formattype + " | Location: " + location)
+		insForm.Exec(title, author, formattype, location, isbn)
+		log.Println("INSERT: Title: " + title + " | Author: " + author + " | Format: " + formattype + " | Location: " + location + " | ISBN: " + isbn)
 	}
 	defer db.Close()
 	http.Redirect(w, r, "/", 301)
@@ -101,7 +137,7 @@ func main() {
 
 	log.Println("Server started on: http://localhost:8080")
 	http.HandleFunc("/", Index)
-	// http.HandleFunc("/show", Show)
+	http.HandleFunc("/show", Show)
 	http.HandleFunc("/add", Add)
 	http.HandleFunc("/insert", Insert)
 	// http.HandleFunc("/edit", Edit)

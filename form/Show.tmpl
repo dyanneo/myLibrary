@@ -1,8 +1,10 @@
 {{ define "Show" }}
   {{ template "Header" }}
     {{ template "Menu"  }}
-    <h2> Register {{ .ID }} </h2>
-      <p>Title: {{ .Title }}</p>
-      <p>Author:  {{ .Author }}</p><br /> <a href="/edit?id={{ .ID }}">Edit</a></p>
+    <h2> Register {{ .Title }} </h2>
+      <p>Author:  {{ .Author }}</p>
+      <p>Format: {{ .FormatType }}</p>
+      <p>Location:  {{ .Location }}</p>
+      <p>ISBN: {{ .ISBN }}</p><br /> <a href="/edit?id={{ .ID }}">Edit</a></p>
   {{ template "Footer" }}
 {{ end }}
