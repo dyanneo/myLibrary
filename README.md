@@ -10,10 +10,10 @@ Web app with mysql db and go backend to capture and organize my books based on [
 - `/`: main screen
 - `/add`: add a book
 - `/show`: see full list
+- `/edit`: change a book
 - `/print`: print full list   FUTURE
 
 ### Next Features
-- edit
 - delete
 - print
 - click isbn to look up at https://isbnsearch.org/
