@@ -1,0 +1,15 @@
+{{ define "Edit" }}
+  {{ template "Header" }}
+    {{ template "Menu"  }}
+     <h2>Edit Title, Author, Format, Location and ISBN</h2>  
+    <form method="POST" action="update">
+     <input type="hidden" name="id" value="{{ .ID }}" />
+      <label> Title </label><input type="text" name="title" value="{{ .Title }}"  /><br />
+      <label> Author </label><input type="text" name="author" value="{{ .Author }}"  /><br />
+      <label> Format </label><input type="text" name="formattype" value="{{ .FormatType }}"  /><br />
+      <label> Location </label><input type="text" name="location" value="{{ .Location }}"  /><br />
+      <label> ISBN </label><input type="text" name="isbnnumber" value="{{ .ISBN }}"  /><br  />
+      <input type="submit" value="Save book" />
+      </form><br />
+  {{ template "Footer" }}
+{{ end }}
